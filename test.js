@@ -1,25 +1,26 @@
 const express = require("./node_modules/express");
 const sqlite3 = require("sqlite3");
-const morgan = require("morgan");
+var date = new Date()
 
 const app = express();
 
 app.use(express.json())
-// un mdwr morgan personnalisé . Un token = un élément de la liste 'template config string ci dessous 
-app.use( morgan(':method :status :param[name] :res[content-length] :date  - :response-time ms') );
-morgan.token('param', function(req, res, param) {
-  return   "- Param req : " + req.params[param] + " -  " +  Date.now();
+
+app.use('/a/:id',function (req, res, next) {
+  console.log( "Requête : " + req.params.id)
+  console.log(date)
   
-});
+  next()
+})
+
+
 
 var monobj = { name: "toto" };
 
 app.get("/a/:name", (req, res) => {
-  res.type("json");
-  // => 'application/json'
-  // console.log(req.headers);
+  res.type("json")
+  res.json(monobj.name)
 
-  res.json(monobj.name);
 });
 
 const dbName = "data/bdd.db";
@@ -29,7 +30,7 @@ db = new sqlite3.Database(dbName, err => {
   if (err) {
     throw err;
   } else {
-    // console.log("connecté");
+    console.log("connecté");
   }
 });
 
@@ -99,5 +100,5 @@ app.get("/test", (req, res) => {
 });
 
 app.listen(8080, () => {
-  console.log("POrt 3000");
-});
+  console.log("Port 8080");
+})
